@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Backpack.tf+Gladiator.tf Floating Stats (BETA)_EN
 // @namespace    http://tampermonkey.net/
-// @version      1.10
+// @version      1.11
 // @description  Floating Gladiator.tf stats widget over backpack.tf
 // @match        https://backpack.tf/stats/*
 // @match        https://backpack.tf/classifieds?item=*
