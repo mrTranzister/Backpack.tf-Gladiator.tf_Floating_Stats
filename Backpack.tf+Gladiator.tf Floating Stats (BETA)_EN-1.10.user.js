@@ -4,7 +4,7 @@
 // @version      1.10
 // @description  Floating Gladiator.tf stats widget over backpack.tf
 // @match        https://backpack.tf/stats/*
-// @match        https://backpack.tf/classifieds*
+// @match        https://backpack.tf/classifieds?item=*
 // @grant        GM_xmlhttpRequest
 // @connect      gladiator.tf
 // @author       mrTranzister+GPT
