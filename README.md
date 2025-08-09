@@ -9,3 +9,5 @@ Integrates item statistics from Gladiator.tf on the Backpack.tf item page.
 <br><span style="font-size: 8px; font-weight: normal;">•</span>If an item has too many transactions (such as Mann Co. Supply Crate Key), loading the statistics takes longer.
 <br><span style="font-size: 8px; font-weight: normal;">•</span>The script is in beta testing.
 <br><span style="font-size: 8px; font-weight: normal;">•</span>If you found the script useful, you can support me <a href="https://steamcommunity.com/tradeoffer/new/?partner=67578242&token=F58G4TRq" target="_blank" rel="noopener noreferrer">here</a>.
+<br>![](https://github.com/mrTranzister/Backpack.tf-Gladiator.tf_Floating_Stats/blob/main/stats.png?raw=true)
+<br>![](https://github.com/mrTranzister/Backpack.tf-Gladiator.tf_Floating_Stats/blob/main/classifieds.png?raw=true)
