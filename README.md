@@ -10,7 +10,7 @@ Integrates item statistics from Gladiator.tf on the Backpack.tf item page.
 <br><span style="font-size: 8px; font-weight: normal;">•</span>The script is in beta testing.
 <br><span style="font-size: 8px; font-weight: normal;">•</span>If you found the script useful, you can support me <a href="https://steamcommunity.com/tradeoffer/new/?partner=67578242&token=F58G4TRq" target="_blank" rel="noopener noreferrer">here</a>.
 <br>
-<br>Many bugs were found when viewing Strange items and other modified items through classifieds. This is related to the absence of the item type in the link. When viewing through stats, everything works fine. I will try to fix this as soon as possible.
+<br>A hotfix has been released that fixed 80% of the bugs. Now Strange, Vintage, Genuine, and others work correctly. There is still an issue with most Unusual items.
 <br>
 <br>![](https://github.com/mrTranzister/Backpack.tf-Gladiator.tf_Floating_Stats/blob/main/stats.png?raw=true)
 <br>![](https://github.com/mrTranzister/Backpack.tf-Gladiator.tf_Floating_Stats/blob/main/classifieds.png?raw=true)
