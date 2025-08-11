@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Backpack.tf+Gladiator.tf Floating Stats (BETA)_EN
+// @name         Backpack.tf+Gladiator.tf Floating Stats (BETA)
 // @namespace    http://tampermonkey.net/
-// @version      2.0
+// @version      2.1
 // @description  Floating Gladiator.tf stats widget over backpack.tf
 // @match        https://backpack.tf/stats/*
 // @match        https://backpack.tf/classifieds?item=*
@@ -16,6 +16,13 @@
     const WIDGET_WIDTH = 360;
     const WIDGET_MINI_WIDTH = 110;
 
+    function getCleanText(el) {
+        if (!el) return '';
+        let clone = el.cloneNode(true);
+        clone.querySelectorAll('small, span[data-tip]').forEach(s => s.remove());
+        return clone.textContent.replace(/\s+/g, ' ').trim();
+    }
+
     function waitForItemName(callback) {
         let tries = 0;
         const maxTries = 50;
@@ -25,16 +32,16 @@
             let name = null;
 
             let titleEl = document.querySelector('.listing-title h5');
-            if (titleEl) name = titleEl.textContent.trim();
+            if (titleEl) name = getCleanText(titleEl);
 
             if (!name) {
                 let link = document.querySelector('.item-link');
-                if (link) name = link.textContent.trim();
+                if (link) name = getCleanText(link);
             }
 
             if (!name) {
                 let heading = document.querySelector('.media-heading a');
-                if (heading) name = heading.textContent.trim();
+                if (heading) name = getCleanText(heading);
             }
 
             if (!name) {
@@ -60,6 +67,9 @@
         GM_xmlhttpRequest({
             method: "GET",
             url: gladiatorUrl,
+            headers: {
+                'User-Agent': `Gladiator.tf Floating Stats / ${GM_info.script.version}`
+            },
             onload: function (response) {
                 let parser = new DOMParser();
                 let doc = parser.parseFromString(response.responseText, "text/html");
@@ -69,6 +79,49 @@
                 let content = statsSection
                     ? statsSection.innerHTML
                     : `<div style="color:#ff6666;">No statistics found for "${itemName}"</div>`;
+
+                if (content) {
+                    let tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = content;
+
+                    function removeTimeTextNodes(node) {
+                        if (node.nodeType === Node.TEXT_NODE) {
+                            let timeRegex = /\b\d{2}:\d{2}:\d{2}\b/;
+                            if (timeRegex.test(node.textContent)) {
+                                node.textContent = node.textContent.replace(timeRegex, '');
+                            }
+                        } else {
+                            node.childNodes.forEach(removeTimeTextNodes);
+                        }
+                    }
+                    removeTimeTextNodes(tempDiv);
+
+                    let tzRegex = /\([^)]+\)/g;
+                    tempDiv.innerHTML = tempDiv.innerHTML.replace(tzRegex, '');
+
+                    let gmtRegex = /GMT[+-]\d{4}/g;
+                    tempDiv.innerHTML = tempDiv.innerHTML.replace(gmtRegex, '');
+
+                    function reformatDates(node) {
+                        if (node.nodeType === Node.TEXT_NODE) {
+                            const dateRegex = /\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{1,2})\s+(\d{4})\b/g;
+                            const monthMap = {
+                                Jan: '01', Feb: '02', Mar: '03', Apr: '04',
+                                May: '05', Jun: '06', Jul: '07', Aug: '08',
+                                Sep: '09', Oct: '10', Nov: '11', Dec: '12'
+                            };
+                            node.textContent = node.textContent.replace(dateRegex, (match, mon, day, year) => {
+                                let dd = day.padStart(2, '0');
+                                return `${dd}.${monthMap[mon]}.${year}`;
+                            });
+                        } else {
+                            node.childNodes.forEach(reformatDates);
+                        }
+                    }
+                    reformatDates(tempDiv);
+
+                    content = tempDiv.innerHTML;
+                }
 
                 let widget = document.createElement('div');
                 widget.style.position = "fixed";
@@ -136,5 +189,26 @@
         });
     }
 
-    waitForItemName(loadStats);
+    const button = document.createElement('button');
+    button.textContent = "Show Gladiator.tf statistics";
+    button.style.position = 'fixed';
+    button.style.top = '45px';
+    button.style.right = '90px';
+    button.style.zIndex = '10000';
+    button.style.padding = '8px 12px';
+    button.style.backgroundColor = '#ff9900';
+    button.style.border = 'none';
+    button.style.borderRadius = '5px';
+    button.style.color = '#000';
+    button.style.cursor = 'pointer';
+    button.style.fontWeight = 'bold';
+    button.style.boxShadow = '0 2px 6px rgba(0,0,0,0.3)';
+
+    button.addEventListener('click', () => {
+        waitForItemName(loadStats);
+        button.style.display = 'none';
+    });
+
+    document.body.appendChild(button);
+
 })();
